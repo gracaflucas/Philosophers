@@ -39,4 +39,10 @@ if they do, simulation stops, if not, simulation stops when a phil die
 they sit in a circle, so phil N, sits besides N + 1 and N - 1.
 Phil 1 sits next to N - 1 (number of phil) and N + 2 (next) USE A CIRCULAR
 Linked list?, each phil must be a thread. so a struct table with structs
-phils?*/
+phils?
+use a monitor to get info in between the philosophers
+when eating, get time of last meal, so to do a priority in what phil must eat
+the monitor checks the availability of forks and the priority list
+do a function for each routine, so a function for eating, one for sleeping and one for thinking
+
+*/
