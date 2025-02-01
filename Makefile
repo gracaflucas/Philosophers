@@ -1,4 +1,4 @@
-CFLAGS = -Wall -Werror -Wextra -g
+CFLAGS = -Wall -Werror -Wextra -g -pthread
 
 NAME = philo
 

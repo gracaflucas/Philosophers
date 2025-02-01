@@ -12,21 +12,48 @@
 
 #include "philo.h"
 
+static void	cleanup(pthread_t *philos, pthread_mutex_t mutex);
+static void	init(pthread_t *philos, pthread_mutex_t mutex, int n);
+
 int	main(int argc, char **argv)
 {
-	(void)argv;
+	pthread_t		philos[ft_atoi(argv[1])];
+	pthread_mutex_t	mutex;
+
 	if (argc > 6 && argc < 5)
-	{
-		printf("Wrong number of arguments. Try:\n\'");
-		printf("./philo\'\n\"Number_of_philosophers\"\n\"Time_to_die");
-		printf("\"\n\"Time_to_eat\"\n\"Time_to_sleep\"\n\"Number_of_");
-		printf("time_each_philosopher_must_eat\"      *[Optional]*\n");
-		return (1);
-	}
-	if (argv[1] < 1)
-		return (printf("Number of Philosophers cant be 0 or less"), 1);
-	// init_arguments();
+		return (argument_error(), 1);
+	if (ft_atoi(argv[1]) < 1)
+		return (printf("Number of Philosophers can't be 0 or less"), 1);
+	init(philos, mutex, argv[1]);
 	// phil_loop();
+	cleanup(philos, mutex);
+	return (0);
+}
+
+static int	init(pthread_t *philos, pthread_mutex_t mutex, int n)
+{
+	int	i;
+
+	i = 0;
+	pthread_mutex_init(&mutex, NULL);
+	while (i < n)
+	{
+		if (pthread_create(philos[i], NULL, &monitor, NULL) != 0)
+			return (printf("Error creating thread. %i\n", i), 1);
+		i++;
+	}
+	i = 0;
+	while (philos[i])
+	{
+		if (pthread_join(philos[i], NULL) != 0)
+			return (printf("Error joining thread.\n"), 1);
+		i++;
+	}
+}
+
+static void	cleanup(pthread_t *philos, pthread_mutex_t mutex)
+{
+	pthread_mutex_destroy(&mutex);
 }
 
 /* number of forks = number of phil (argv[1]);
@@ -44,5 +71,5 @@ use a monitor to get info in between the philosophers
 when eating, get time of last meal, so to do a priority in what phil must eat
 the monitor checks the availability of forks and the priority list
 do a function for each routine, so a function for eating, one for sleeping and one for thinking
-
+distinguish philosophers between odd and even? i % 2 = 0
 */

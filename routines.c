@@ -1,28 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo.h                                            :+:      :+:    :+:   */
+/*   routines.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lufiguei <lufiguei@student.42porto.co      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/22 13:19:19 by lufiguei          #+#    #+#             */
-/*   Updated: 2024/11/22 13:19:20 by lufiguei         ###   ########.fr       */
+/*   Created: 2025/02/01 11:19:53 by lufiguei          #+#    #+#             */
+/*   Updated: 2025/02/01 11:19:55 by lufiguei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILO_H
-# define PHILO_H
+#include "philo.h"
 
-# include <pthread.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <string.h>
-# include <sys/time.h>
-# include <unistd.h>
-
+static void	*eat();
+static void	*think();
+static void	*sleep();
 void    *monitor();
-int     argument_error();
 
-int	ft_atoi(const char *nptr);
+void    *monitor()
+{}
 
-#endif
+static void *eat()
+{}
+
+static void *think()
+{}
+
+static void *sleep()
+{}
