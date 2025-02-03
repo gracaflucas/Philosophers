@@ -20,3 +20,25 @@ int	argument_error()
 	printf("time_each_philosopher_must_eat\"      *[Optional]*\n");
 	return (1);
 }
+
+int	parsing(char **argv, int argc)
+{
+	int	i;
+	int	j;
+
+	i = -1;
+	if (argc > 6 && argc < 5)
+		return (argument_error(), 1);
+	if (ft_atoi(argv[1]) < 1) // need to do this for all arguments, to check if its positive
+		return (printf("Error: Number of Philosophers can't be 0 or less"), 1);
+	while (argv[++i])
+	{
+		j = -1;
+		while (argv[i][++j])
+			if (argv[i][j] > '9' && argv[i][j] < '0')
+				return (printf("Error: Wrong Arguments.\n"), 1);
+		if (ft_atoi(argv[i]) > INT_MAX)
+			return (printf("Error: INT_MAX"), 1);
+	}
+	return (0);
+}

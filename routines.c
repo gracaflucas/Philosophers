@@ -12,19 +12,18 @@
 
 #include "philo.h"
 
-static void *eat();
-static void *think();
-static void *sleep();
-void        *monitor();
+static void	*eat();
+static void	*think();
+static void	*sleep();
 
-void    *monitor()
+void	*monitor()
 {}
 
-static void *eat()
+static void	*eat()
 {}
 
-static void *think()
+static void	*think()
 {}
 
-static void *sleep()
+static void	*sleep()
 {}

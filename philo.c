@@ -12,48 +12,42 @@
 
 #include "philo.h"
 
-static void	cleanup(pthread_t *philos, pthread_mutex_t mutex);
-static void	init(pthread_t *philos, pthread_mutex_t mutex, int n);
+static void	cleanup(t_philo *philos, t_fork *fork);
+static void	init(t_philo *philos, t_fork *fork, int n);
 
 int	main(int argc, char **argv)
 {
-	pthread_t		philos[ft_atoi(argv[1])];
-	pthread_mutex_t	mutex;
+	t_philo	philos[ft_atoi(argv[1])];
+	t_fork	fork[ft_atoi(argv[1])];
 
-	if (argc > 6 && argc < 5)
-		return (argument_error(), 1);
-	if (ft_atoi(argv[1]) < 1)
-		return (printf("Number of Philosophers can't be 0 or less"), 1);
-	init(philos, mutex, argv[1]);
-	// phil_loop();
-	cleanup(philos, mutex);
+	if (parsing(argv, argc) != 0)
+		return (1);
+	init(philos, fork, argv[1]);
+	cleanup(philos, fork);
 	return (0);
 }
 
-static int	init(pthread_t *philos, pthread_mutex_t mutex, int n)
+static int	init(t_philo *philos, t_fork *fork, int n)
 {
 	int	i;
 
-	i = 0;
-	pthread_mutex_init(&mutex, NULL);
-	while (i < n)
-	{
+	i = -1;
+	while (++i < n)
+		if (pthread_mutex_init(&fork, NULL) != 0)
+			return (printf("Error: mutex_init\n"), 1);
+	i = -1;
+	while (++i < n)
 		if (pthread_create(philos[i], NULL, &monitor, NULL) != 0)
-			return (printf("Error creating thread. %i\n", i), 1);
-		i++;
-	}
-	i = 0;
-	while (philos[i])
-	{
+			return (printf("Error: thread create.\n"), 1);
+	i = -1;
+	while (philos[++i])
 		if (pthread_join(philos[i], NULL) != 0)
-			return (printf("Error joining thread.\n"), 1);
-		i++;
-	}
+			return (printf("Error: thread join.\n"), 1);
 }
 
-static void	cleanup(pthread_t *philos, pthread_mutex_t mutex)
+static void	cleanup(t_philo *philos, t_fork *fork)
 {
-	pthread_mutex_destroy(&mutex);
+	pthread_mutex_destroy(&fork);
 }
 
 /* number of forks = number of phil (argv[1]);
