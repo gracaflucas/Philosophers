@@ -7,6 +7,8 @@ RM = rm -rf
 
 SRC = philo.c\
 	error.c\
+	routines.c\
+	utils.c\
 
 OBJ = $(SRC:.c=.o)
 

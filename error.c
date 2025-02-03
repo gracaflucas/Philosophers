@@ -12,11 +12,11 @@
 
 #include "philo.h"
 
-int    argument_error()
+int	argument_error()
 {
-    printf("Wrong number of arguments. Try:\n\'");
+	printf("Wrong number of arguments. Try:\n\'");
 	printf("./philo\'\n\"Number_of_philosophers\"\n\"Time_to_die");
 	printf("\"\n\"Time_to_eat\"\n\"Time_to_sleep\"\n\"Number_of_");
 	printf("time_each_philosopher_must_eat\"      *[Optional]*\n");
-    return (1);
+	return (1);
 }

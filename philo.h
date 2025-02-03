@@ -20,9 +20,9 @@
 # include <sys/time.h>
 # include <unistd.h>
 
-void    *monitor();
-int     argument_error();
+void	*monitor();
+int		argument_error();
 
-int	ft_atoi(const char *nptr);
+int		ft_atoi(const char *nptr);
 
 #endif
