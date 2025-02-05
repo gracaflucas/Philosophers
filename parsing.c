@@ -21,48 +21,48 @@ static int	argument_error()
 	return (1);
 }
 
-static int	ft_atoi(char *nptr)
+static long	ft_atol(const char *nptr)
 {
-	int					i;
-	unsigned long int	result;
+	int		i;
+	long	result;
 
 	i = 0;
 	result = 0;
 	while (nptr[i] == 32 || (nptr[i] >= 9 && nptr[i] <= 13))
 		i++;
-	while (nptr[i] == '-' || nptr[i] == '+')
-	{
-		if (nptr[i] == '-')
-			return (-1);
+	if (nptr[i] == '+')
 		i++;
-	}
+	else if (nptr[i] == '-')
+		return (printf("Error: negative number.\n"), 1);
+	if (nptr[i] < '0' || nptr[i] > '9')
+		return (printf("Error: Argument isnt a number.\n"), 1);
 	while (nptr[i] >= '0' && nptr[i] <= '9')
 	{
 		result *= 10;
 		result += nptr[i] - '0';
 		i++;
 	}
+	if (result > INT_MAX)
+		return (printf("Error: INT_MAX.\n"), 1);
 	return (result);
 }
 
-int	parsing(char **argv, int argc)
+int	parsing(t_table *table, char **argv, int argc)
 {
-	int	i;
-	int	j;
-
-	i = -1;
-	if (argc > 6 && argc < 5)
+	if (argc > 6 || argc < 5)
 		return (argument_error(), 1);
-	if (ft_atoi(argv[1]) < 1) // need to do this for all arguments, to check if its positive
-		return (printf("Error: Number of Philosophers can't be 0 or less"), 1);
-	while (argv[++i])
-	{
-		j = -1;
-		while (argv[i][++j])
-			if (argv[i][j] > '9' && argv[i][j] < '0')
-				return (printf("Error: Wrong Arguments.\n"), 1);
-		if (ft_atoi(argv[i]) > INT_MAX)
-			return (printf("Error: INT_MAX"), 1);
-	}
+	table->philo_nbr = ft_atol(argv[1]);
+	table->time_die = ft_atol(argv[2]) * 1000;
+	table->time_eat = ft_atol(argv[3]) * 1000;
+	table->time_sleep = ft_atol(argv[4]) * 1000;
+	if (table->time_eat < 60000 || table->time_sleep < 60000
+			|| table->time_die < 60000)
+		return (printf("Error: Time not greater than  60ms.\n"), 1);
+	if (table->philo_nbr < 1)
+		return (printf("Error: Number of Philosophers can't be 0 or less.\n"), 1);
+	if (argv[5])
+		table->max_meals = ft_atol(argv[5]);
+	else
+		table->max_meals = -1;
 	return (0);
 }

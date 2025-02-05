@@ -12,24 +12,29 @@
 
 #include "philo.h"
 
-static void	cleanup(t_philo *philos, t_fork *fork);
-static void	init(t_philo *philos, t_fork *fork, int n);
+static void	cleanup(t_table *table);
+static int	init(t_table *table);
 
 int	main(int argc, char **argv)
 {
-	t_philo	philos[ft_atoi(argv[1])];
-	t_fork	fork[ft_atoi(argv[1])];
+	t_table	table;
 
-	if (parsing(argv, argc) != 0)
-		return (1);
-	init(philos, fork, argv[1]);
-	cleanup(philos, fork);
+	if (parsing(&table, argv, argc) == 0)
+	{
+		init(&table);
+		cleanup(&table);
+	}
 	return (0);
 }
 
-static int	init(t_philo *philos, t_fork *fork, int n)
+static int	init(t_table *table)
 {
-	int	i;
+	table->end = 0;
+	table->philos = malloc(sizeof(t_philo) * table->philo_nbr);
+	if (table->philos == NULL)
+		return (printf("Error: Memory allocation.\n"), 1);
+
+	/*int	i;
 
 	i = -1;
 	while (++i < n)
@@ -42,12 +47,14 @@ static int	init(t_philo *philos, t_fork *fork, int n)
 	i = -1;
 	while (philos[++i])
 		if (pthread_join(philos[i], NULL) != 0)
-			return (printf("Error: thread join.\n"), 1);
+			return (printf("Error: thread join.\n"), 1);*/
+	return (0);
 }
 
-static void	cleanup(t_philo *philos, t_fork *fork)
+static void	cleanup(t_table *table)
 {
-	pthread_mutex_destroy(&fork);
+	pthread_mutex_destroy(table->forks);
+	free (table->philos);
 }
 
 /* number of forks = number of phil (argv[1]);
