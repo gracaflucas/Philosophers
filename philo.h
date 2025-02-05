@@ -52,9 +52,7 @@ typedef struct s_table
 }			t_table;
 
 void	*monitor();
-int		argument_error();
 
-int		ft_atoi(char *nptr);
 int		parsing(char **argv, int argc);
 
 #endif

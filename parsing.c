@@ -12,13 +12,37 @@
 
 #include "philo.h"
 
-int	argument_error()
+static int	argument_error()
 {
 	printf("Wrong number of arguments. Try:\n\'");
 	printf("./philo\'\n\"Number_of_philosophers\"\n\"Time_to_die");
 	printf("\"\n\"Time_to_eat\"\n\"Time_to_sleep\"\n\"Number_of_");
 	printf("time_each_philosopher_must_eat\"      *[Optional]*\n");
 	return (1);
+}
+
+static int	ft_atoi(char *nptr)
+{
+	int					i;
+	unsigned long int	result;
+
+	i = 0;
+	result = 0;
+	while (nptr[i] == 32 || (nptr[i] >= 9 && nptr[i] <= 13))
+		i++;
+	while (nptr[i] == '-' || nptr[i] == '+')
+	{
+		if (nptr[i] == '-')
+			return (-1);
+		i++;
+	}
+	while (nptr[i] >= '0' && nptr[i] <= '9')
+	{
+		result *= 10;
+		result += nptr[i] - '0';
+		i++;
+	}
+	return (result);
 }
 
 int	parsing(char **argv, int argc)

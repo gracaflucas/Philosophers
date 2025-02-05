@@ -6,7 +6,7 @@ CC = cc
 RM = rm -rf
 
 SRC = philo.c\
-	error.c\
+	parsing.c\
 	routines.c\
 	utils.c\
 
