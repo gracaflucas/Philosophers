@@ -5,7 +5,7 @@ NAME = philo
 CC = cc
 RM = rm -rf
 
-SRC = philo.c\
+SRC = main.c\
 	parsing.c\
 	routines.c\
 	utils.c\
