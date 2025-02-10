@@ -34,10 +34,10 @@ typedef struct	s_philo
 	int			id;
 	int			meals;
 	int			full;
-	long		last_meal_time;
+	long		last_meal_time; // colocar no eating routine
 	t_fork		*left;
 	t_fork		*right;
-	pthread_t	thread_id;
+	pthread_t	thread_id; // falta create and join
 	t_table		*table;
 }				t_philo;
 
@@ -50,7 +50,7 @@ typedef struct s_table
 	long	time_sleep;
 	long	time_die;
 	long	max_meals;
-	long	start;
+	long	start; // inicio da simulacao
 	int		end;
 }			t_table;
 

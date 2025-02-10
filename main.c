@@ -14,6 +14,7 @@
 
 static void	cleanup(t_table *table);
 static int	init(t_table *table);
+static void	init_philo(t_table *table);
 
 int	main(int argc, char **argv)
 {
@@ -29,45 +30,94 @@ int	main(int argc, char **argv)
 
 static int	init(t_table *table)
 {
-	table->end = 0;
+	int	i;
+
+	table->end = 0; // fim da simulacao = end == 1;
 	table->philos = malloc(sizeof(t_philo) * table->philo_nbr);
 	if (table->philos == NULL)
 		return (printf("Error: Memory allocation.\n"), 1);
-
-	/*int	i;
-
+	table->forks = malloc(sizeof(t_fork) * table->philo_nbr);
+	if (table->forks == NULL)
+		return (printf("Error: Memory allocation.\n"), 1);
 	i = -1;
-	while (++i < n)
-		if (pthread_mutex_init(&fork, NULL) != 0)
+	while (++i < table->philo_nbr)
+	{
+		if (pthread_mutex_init(&table->forks[i].fork, NULL) != 0)
 			return (printf("Error: mutex_init\n"), 1);
+		table->forks[i].id = i; // conta a iniciar do 0;
+	}
+	init_philo(&table);
+	return (0);
+}
+// if odd philo, pick left first
+// if even philo, pick right first
+static void	init_philo(t_table *table)
+{
+	int	i;
+
 	i = -1;
-	while (++i < n)
-		if (pthread_create(philos[i], NULL, &monitor, NULL) != 0)
-			return (printf("Error: thread create.\n"), 1);
+	while (++i < table->philo_nbr)
+	{
+		table->philos.id = i + 1; // conta a partir do 1;
+		table->philos.meals = 0;
+		table->philos.full = 0; // se chegar ao max meals, para de comer e espera acabar a simulacao
+		if (i % 2 == 0)
+		{
+			table->philos.right = &table->forks[table->philos.id - 1];
+			table->philos.left = &table->forks[table->philos.id % table->philo_nbr];
+		}
+		else if (i % 2 != 0)
+		{
+			table->philos.left = &table->forks[table->philos.id % table->philo_nbr];
+			table->philos.right = &table->forks[table->philos.id - 1];
+		}
+	}
+}
+
+static int	cleanup(t_table *table)
+{
+	int	i;
+
 	i = -1;
-	while (philos[++i])
-		if (pthread_join(philos[i], NULL) != 0)
-			return (printf("Error: thread join.\n"), 1);*/
+	while (++i < table->philo_nbr)
+	{
+		if (pthread_mutex_destroy(&table->forks[i].fork) != 0)
+			return (printf("Error: mutex_destroy.\n"), 1);
+		free (table->forks[i]); // confirmar se é preciso dar free em cada fork
+	}
+	free (table->forks);
+	i = -1;
+	while (++i < table->philo_nbr)
+	{	
+		if (pthread_detach(&table->philos[i].thread_id) != 0)
+			return (prinf("Error: detach_thread.\n"), 1);
+		free(table->philos[i]); // confirmar se é preciso dar free em cada philo
+	}
+	free (table->philos);
 	return (0);
 }
 
-static void	cleanup(t_table *table)
-{
-	pthread_mutex_destroy(table->forks);
-	free (table->philos);
-}
+/*
+int	i;
 
-/* number of forks = number of phil (argv[1]);
-last argument is optional
+i = -1;
+while (++i < table->philo_nbr)
+	if (pthread_create(&table->philos[i].thread_id, NULL, &monitor, NULL) != 0)
+		return (printf("Error: thread create.\n"), 1);
+i = -1;
+while (++i < table->philo_nbr)
+	if (pthread_join(&table->philos[i].thread_id, NULL) != 0)
+		return (printf("Error: thread join.\n"), 1);
+*/
+
+/*
 time to die starts since the beggining of the program, if a philosopher isnt 
 eating. time to eat, during this time the philo will hold 2 forks, the left
-and the right one. time to sleep after eating? if defined last argument, 
-they all need to eat at least this number of times
-if they do, simulation stops, if not, simulation stops when a phil die
+and the right one. time to sleep after eating?
+simulation stops when a phil die
 they sit in a circle, so phil N, sits besides N + 1 and N - 1.
-Phil 1 sits next to N - 1 (number of phil) and N + 2 (next) USE A CIRCULAR
-Linked list?, each phil must be a thread. so a struct table with structs
-phils?
+Phil 1 sits next to N - 1 (number of phil) and N + 1 (next) USE A CIRCULAR
+Linked list?
 use a monitor to get info in between the philosophers
 when eating, get time of last meal, so to do a priority in what phil must eat
 the monitor checks the availability of forks and the priority list
