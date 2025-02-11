@@ -54,8 +54,9 @@ typedef struct s_table
 	int		end;
 }			t_table;
 
-void	*monitor();
+void	*routine();
 
 int		parsing(t_table *table, char **argv, int argc);
+int		init(t_table *table);
 
 #endif

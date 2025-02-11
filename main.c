@@ -13,8 +13,7 @@
 #include "philo.h"
 
 static void	cleanup(t_table *table);
-static int	init(t_table *table);
-static void	init_philo(t_table *table);
+static int create_and_join(t_table *table);
 
 int	main(int argc, char **argv)
 {
@@ -23,55 +22,10 @@ int	main(int argc, char **argv)
 	if (parsing(&table, argv, argc) == 0)
 	{
 		init(&table);
+		create_and_join(&table);
 		cleanup(&table);
 	}
 	return (0);
-}
-
-static int	init(t_table *table)
-{
-	int	i;
-
-	table->end = 0; // fim da simulacao = end == 1;
-	table->philos = malloc(sizeof(t_philo) * table->philo_nbr);
-	if (table->philos == NULL)
-		return (printf("Error: Memory allocation.\n"), 1);
-	table->forks = malloc(sizeof(t_fork) * table->philo_nbr);
-	if (table->forks == NULL)
-		return (printf("Error: Memory allocation.\n"), 1);
-	i = -1;
-	while (++i < table->philo_nbr)
-	{
-		if (pthread_mutex_init(&table->forks[i].fork, NULL) != 0)
-			return (printf("Error: mutex_init\n"), 1);
-		table->forks[i].id = i; // conta a iniciar do 0;
-	}
-	init_philo(&table);
-	return (0);
-}
-// if odd philo, pick left first
-// if even philo, pick right first
-static void	init_philo(t_table *table)
-{
-	int	i;
-
-	i = -1;
-	while (++i < table->philo_nbr)
-	{
-		table->philos.id = i + 1; // conta a partir do 1;
-		table->philos.meals = 0;
-		table->philos.full = 0; // se chegar ao max meals, para de comer e espera acabar a simulacao
-		if (i % 2 == 0)
-		{
-			table->philos.right = &table->forks[table->philos.id - 1];
-			table->philos.left = &table->forks[table->philos.id % table->philo_nbr];
-		}
-		else if (i % 2 != 0)
-		{
-			table->philos.left = &table->forks[table->philos.id % table->philo_nbr];
-			table->philos.right = &table->forks[table->philos.id - 1];
-		}
-	}
 }
 
 static int	cleanup(t_table *table)
@@ -97,18 +51,19 @@ static int	cleanup(t_table *table)
 	return (0);
 }
 
-/*
-int	i;
+static int create_and_join(t_table *table)
+{
+	int	i;
 
-i = -1;
-while (++i < table->philo_nbr)
-	if (pthread_create(&table->philos[i].thread_id, NULL, &monitor, NULL) != 0)
-		return (printf("Error: thread create.\n"), 1);
-i = -1;
-while (++i < table->philo_nbr)
-	if (pthread_join(&table->philos[i].thread_id, NULL) != 0)
-		return (printf("Error: thread join.\n"), 1);
-*/
+	i = -1;
+	while (++i < table->philo_nbr)
+		if (pthread_create(&table->philos[i].thread_id, NULL, &routine, NULL) != 0)
+			return (printf("Error: thread create.\n"), 1);
+	i = -1;
+	while (++i < table->philo_nbr)
+		if (pthread_join(&table->philos[i].thread_id, NULL) != 0)
+			return (printf("Error: thread join.\n"), 1);
+}
 
 /*
 time to die starts since the beggining of the program, if a philosopher isnt 
@@ -123,4 +78,15 @@ when eating, get time of last meal, so to do a priority in what phil must eat
 the monitor checks the availability of forks and the priority list
 do a function for each routine, so a function for eating, one for sleeping and one for thinking
 distinguish philosophers between odd and even? i % 2 = 0
+*/
+
+1 
+/*   Phil 1 is next to phil + 1 and phil % philnumbr + 1
+		 DINNER READY
+			phil 2
+		f1	    	f2
+	Phil1		      phil 3
+	    f0          f3
+	  phil 5  f4  phil 4
+
 */

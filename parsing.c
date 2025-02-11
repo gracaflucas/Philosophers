@@ -66,3 +66,49 @@ int	parsing(t_table *table, char **argv, int argc)
 		table->max_meals = -1;
 	return (0);
 }
+
+int	init(t_table *table)
+{
+	int	i;
+
+	table->end = 0; // fim da simulacao = end == 1;
+	table->philos = malloc(sizeof(t_philo) * table->philo_nbr);
+	if (table->philos == NULL)
+		return (printf("Error: Memory allocation.\n"), 1);
+	table->forks = malloc(sizeof(t_fork) * table->philo_nbr);
+	if (table->forks == NULL)
+		return (printf("Error: Memory allocation.\n"), 1);
+	i = -1;
+	while (++i < table->philo_nbr)
+	{
+		if (pthread_mutex_init(&table->forks[i].fork, NULL) != 0)
+			return (printf("Error: mutex_init\n"), 1);
+		table->forks[i].id = i;
+	}
+	init_philo(&table);
+	return (0);
+}
+// if odd philo, pick left first
+// if even philo, pick right first
+static void	init_philo(t_table *table)
+{
+	int	i;
+
+	i = -1;
+	while (++i < table->philo_nbr)
+	{
+		table->philos.id = i + 1; // conta a partir do 1; pra garantir se é par ou impar
+		table->philos.meals = 0;
+		table->philos.full = 0; // se chegar ao max meals, para de comer e espera acabar a simulacao
+		if (i % 2 == 0)
+		{
+			table->philos.right = &table->forks[table->philos.id - 1];
+			table->philos.left = &table->forks[table->philos.id % table->philo_nbr];
+		}
+		else if (i % 2 != 0)
+		{
+			table->philos.left = &table->forks[table->philos.id % table->philo_nbr];
+			table->philos.right = &table->forks[table->philos.id - 1];
+		}
+	}
+}
