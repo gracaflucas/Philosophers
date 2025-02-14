@@ -34,29 +34,33 @@ typedef struct	s_philo
 	int			id;
 	int			meals;
 	int			full;
-	long		last_meal_time; // colocar no eating routine
+	long		last_meal_time;
 	t_fork		*left;
 	t_fork		*right;
-	pthread_t	thread_id; // falta create and join
+	pthread_t	thread_id;
 	t_table		*table;
 }				t_philo;
 
 typedef struct s_table
 {
-	t_philo	*philos;
-	t_fork	*forks;
-	long	philo_nbr;
-	long	time_eat;
-	long	time_sleep;
-	long	time_die;
-	long	max_meals;
-	long	start; // inicio da simulacao
-	int		end;
-}			t_table;
+	t_philo			*philos;
+	t_fork			*forks;
+	pthread_mutex_t	lock;
+	long			philo_nbr;
+	long			time_eat;
+	long			time_sleep;
+	long			time_die;
+	long			max_meals;
+	long			start;
+	int				end;
+}					t_table;
 
-void	*routine();
+void	*routine(void *arg);
+void    *monitor(void *arg);
 
 int		parsing(t_table *table, char **argv, int argc);
 int		init(t_table *table);
+long	get_current_time();
+void	precise_usleep(long duration);
 
 #endif
