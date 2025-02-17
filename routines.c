@@ -31,7 +31,7 @@ void	*routine(void *arg)
             philo_eat(philo);
         philo_sleep(philo);
         philo_think(philo);
-        precise_usleep(100);
+        precise_usleep(5);
     }
     return (NULL);
 }
@@ -66,7 +66,7 @@ void    *monitor(void *arg)
         }
         if (full == table->philo_nbr)
             return (update_end(table), printf("All Philosophers have eaten, ending simulation.\n"), NULL);
-        precise_usleep(100);
+        precise_usleep(5);
     }
     return (NULL);
 }
@@ -100,10 +100,18 @@ static void	*philo_eat(t_philo *philo)
 
 static void	*philo_think(t_philo *philo)
 {
+    long    time_left;
+
     if (check_end(philo->table) == 1)
         return (NULL);
-    printf("Philosopher %d is thinking.\n", philo->id);
-    precise_usleep(100);
+    pthread_mutex_lock(&philo->meal_lock);
+    time_left = philo->table->time_die - get_current_time() - philo->last_meal_time;
+    pthread_mutex_unlock(&philo->meal_lock);
+    if (time_left > philo->table->time_eat)
+    {
+        printf("Philosopher %d is thinking.\n", philo->id);
+        precise_usleep(time_left / 2);
+    }
     return (NULL);
 }
 
