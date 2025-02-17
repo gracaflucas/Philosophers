@@ -61,9 +61,16 @@ int	parsing(t_table *table, char **argv, int argc)
 	if (table->philo_nbr < 1)
 		return (printf("Error: Number of Philosophers can't be 0 or less.\n"), 1);
 	if (argv[5])
+	{
 		table->max_meals = ft_atol(argv[5]);
+		if (table->max_meals == 0)
+			return (printf("You really want them to starve, dont you?\n"), 1);
+	}
 	else
 		table->max_meals = -1;
+	if (table->philo_nbr == 1)
+		return (printf("Philosopher 1 has only one fork and will starve.\n"),
+				precise_usleep(table->time_die), printf("Philosopher 1 died.\n"), 1);
 	return (0);
 }
 

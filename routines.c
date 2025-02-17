@@ -15,30 +15,23 @@
 static void	*philo_eat(t_philo *philo);
 static void	*philo_think(t_philo *philo);
 static void	*philo_sleep(t_philo *philo);
+static int  check_end(t_table *table);
+static void  update_end(t_table *table);
 
 void	*routine(void *arg)
 {
     t_philo *philo;
 
     philo = (t_philo *)arg;
-    if (philo->table->max_meals == 0)
-        return (NULL);
-    if (philo->table->philo_nbr == 1)
-    {
-        printf("Philosopher %d has only one fork and will starve.\n", philo->id);
-        precise_usleep(philo->table->time_die);
-        return (NULL);
-    }
     while (1)
     {
-        pthread_mutex_lock(&philo->table->lock);
-        if (philo->table->end)
-           return (pthread_mutex_unlock(&philo->table->lock), NULL);
-        pthread_mutex_unlock(&philo->table->lock);
+        if (check_end(philo->table) == 1)
+            return (NULL);
         if (!philo->full)
             philo_eat(philo);
         philo_sleep(philo);
         philo_think(philo);
+        precise_usleep(100);
     }
     return (NULL);
 }
@@ -53,10 +46,8 @@ void    *monitor(void *arg)
     table = (t_table *)arg;
     while (1)
     {
-        pthread_mutex_lock(&table->lock);
-        if (table->end)
-            return (pthread_mutex_unlock(&table->lock), NULL);
-        pthread_mutex_unlock(&table->lock);
+        if (check_end(table) == 1)
+            return (NULL);
         i = -1;
         full = 0;
         while (++i < table->philo_nbr)
@@ -64,34 +55,25 @@ void    *monitor(void *arg)
             pthread_mutex_lock(&table->philos[i].meal_lock);
             time_since_last_meal = get_current_time() - table->philos[i].last_meal_time;
             pthread_mutex_unlock(&table->philos[i].meal_lock);
-            pthread_mutex_lock(&table->lock);
-            if (table->end)
-                return (pthread_mutex_unlock(&table->lock), NULL);
-            pthread_mutex_unlock(&table->lock);
+            if (check_end(table) == 1)
+                return (NULL);
             if (time_since_last_meal >= table->time_die)
-            {
-                pthread_mutex_lock(&table->lock);
-                table->end = 1;
-                pthread_mutex_unlock(&table->lock);
-                return (printf("Philosopher %d has died.\n", table->philos[i].id), NULL);
-            }
+                return (update_end(table), printf("Philosopher %d has died.\n", table->philos[i].id), NULL);
+            pthread_mutex_lock(&table->philos[i].meal_lock);
             if (table->philos[i].full)
                 full++;
+            pthread_mutex_unlock(&table->philos[i].meal_lock);
         }
         if (full == table->philo_nbr)
-        {
-            pthread_mutex_lock(&table->lock);
-            table->end = 1;
-            pthread_mutex_unlock(&table->lock);
-            return (NULL);
-        }
+            return (update_end(table), printf("All Philosophers have eaten, ending simulation.\n"), NULL);
+        precise_usleep(100);
     }
     return (NULL);
 }
 
 static void	*philo_eat(t_philo *philo)
 {
-    if (philo->table->end)
+    if (check_end(philo->table) == 1)
         return (NULL);
     if (philo->id % 2 == 0)
     {
@@ -118,7 +100,7 @@ static void	*philo_eat(t_philo *philo)
 
 static void	*philo_think(t_philo *philo)
 {
-    if (philo->table->end)
+    if (check_end(philo->table) == 1)
         return (NULL);
     printf("Philosopher %d is thinking.\n", philo->id);
     precise_usleep(100);
@@ -127,9 +109,26 @@ static void	*philo_think(t_philo *philo)
 
 static void	*philo_sleep(t_philo *philo)
 {
-    if (philo->table->end)
+    if (check_end(philo->table) == 1)
         return (NULL);
     printf("Philosopher %d is sleeping.\n", philo->id);
     precise_usleep(philo->table->time_sleep);
     return (NULL);
+}
+
+static int  check_end(t_table *table)
+{
+    int end;
+
+    pthread_mutex_lock(&table->lock);
+    end = table->end;
+    pthread_mutex_unlock(&table->lock);
+    return (end);
+}
+
+static void  update_end(t_table *table)
+{
+    pthread_mutex_lock(&table->lock);
+    table->end = 1;
+    pthread_mutex_unlock(&table->lock);
 }

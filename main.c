@@ -52,7 +52,7 @@ static int create_and_join(t_table *table)
 	int			i;
 	pthread_t	monitor_thread;
 
-	if (pthread_create(&monitor_thread, NULL, &monitor, table->philos) != 0)
+	if (pthread_create(&monitor_thread, NULL, &monitor, table) != 0)
 		return (printf("Error: monitor thread create.\n"), 1);
 	i = -1;
 	while (++i < table->philo_nbr)
