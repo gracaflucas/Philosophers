@@ -46,17 +46,17 @@ static long	ft_atol(const char *nptr)
 		return (printf("Error: INT_MAX.\n"), 1);
 	return (result);
 }
-
+// confirmar timer, 60.000 ou 60ms?
 int	parsing(t_table *table, char **argv, int argc)
 {
 	if (argc > 6 || argc < 5)
 		return (argument_error(), 1);
 	table->philo_nbr = ft_atol(argv[1]);
-	table->time_die = ft_atol(argv[2]) * 1000;
-	table->time_eat = ft_atol(argv[3]) * 1000;
-	table->time_sleep = ft_atol(argv[4]) * 1000;
-	if (table->time_eat < 60000 || table->time_sleep < 60000
-			|| table->time_die < 60000)
+	table->time_die = ft_atol(argv[2]);// * 1000;
+	table->time_eat = ft_atol(argv[3]);// * 1000;
+	table->time_sleep = ft_atol(argv[4]);// * 1000;
+	if (table->time_eat < 60 || table->time_sleep < 60
+			|| table->time_die < 60)
 		return (printf("Error: Time not greater than  60ms.\n"), 1);
 	if (table->philo_nbr < 1)
 		return (printf("Error: Number of Philosophers can't be 0 or less.\n"), 1);
@@ -84,6 +84,7 @@ static void	init_philo(t_table *table)
 			table->philos[i].right = &table->forks[table->philo_nbr - 1];
 		else
 			table->philos[i].right = &table->forks[i - 1];
+		pthread_mutex_init(&table->philos[i].meal_lock, NULL);
 	}
 }
 

@@ -39,37 +39,38 @@ static int	cleanup(t_table *table)
 	free (table->forks);
 	i = -1;
 	while (++i < table->philo_nbr)
-		if (pthread_detach(table->philos[i].thread_id) != 0)
-			return (printf("Error: detach_thread.\n"), 1);
+		if (pthread_mutex_destroy(&table->philos[i].meal_lock) != 0)
+			return (printf("Error: mutex_destroy.\n"), 1);
 	free (table->philos);
 	if (pthread_mutex_destroy(&table->lock) != 0)
 		return (printf("Error: mutex_destroy.\n"), 1);
-	// detach monitor
 	return (0);
 }
-
+// create and joins all threads, monitor and philos
 static int create_and_join(t_table *table)
 {
 	int			i;
-	pthread_t	monitor_thread; // do i need to malloc?
+	pthread_t	monitor_thread;
 
-	if (pthread_create(&monitor_thread, NULL, &monitor, (void *)table) != 0)
+	if (pthread_create(&monitor_thread, NULL, &monitor, table->philos) != 0)
 		return (printf("Error: monitor thread create.\n"), 1);
 	i = -1;
 	while (++i < table->philo_nbr)
-		if (pthread_create(&table->philos[i].thread_id, NULL, &routine, (void *)&table->philos[i]) != 0)
-			return (printf("Error: thread create.\n"), 1);
+		if (pthread_create(&table->philos[i].thread_id, NULL, &routine, &table->philos[i]) != 0)
+			return (printf("Error: thread create.\n"), cleanup(table), 1);
+	if (pthread_join(monitor_thread, NULL) != 0)
+			return (printf("Error: monitor join.\n"), cleanup(table), 1);
 	i = -1;
 	while (++i < table->philo_nbr)
 		if (pthread_join(table->philos[i].thread_id, NULL) != 0)
-			return (printf("Error: thread join.\n"), 1);
-	pthread_join(monitor_thread, NULL);
+			return (printf("Error: thread join.\n"), cleanup(table), 1);
 	return (0);
 }
 
 long	get_current_time()
 {
 	struct timeval	tv;
+
 	gettimeofday(&tv, NULL);
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
@@ -80,7 +81,7 @@ void	precise_usleep(long duration)
 
 	start = get_current_time();
 	while ((get_current_time() - start) < duration)
-		usleep(200);
+		usleep(500);
 }
 
 /*

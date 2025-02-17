@@ -31,15 +31,16 @@ typedef struct	s_fork
 
 typedef struct	s_philo
 {
-	int			id;
-	int			meals;
-	int			full;
-	long		last_meal_time;
-	t_fork		*left;
-	t_fork		*right;
-	pthread_t	thread_id;
-	t_table		*table;
-}				t_philo;
+	int				id;
+	int				meals;
+	int				full;
+	long			last_meal_time;
+	t_fork			*left;
+	t_fork			*right;
+	pthread_t		thread_id;
+	pthread_mutex_t	meal_lock;
+	t_table			*table;
+}					t_philo;
 
 typedef struct s_table
 {
