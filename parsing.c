@@ -46,15 +46,15 @@ static long	ft_atol(const char *nptr)
 		return (printf("Error: INT_MAX.\n"), 1);
 	return (result);
 }
-// confirmar timer, 60.000 ou 60ms?
+
 int	parsing(t_table *table, char **argv, int argc)
 {
 	if (argc > 6 || argc < 5)
 		return (argument_error(), 1);
 	table->philo_nbr = ft_atol(argv[1]);
-	table->time_die = ft_atol(argv[2]);// * 1000;
-	table->time_eat = ft_atol(argv[3]);// * 1000;
-	table->time_sleep = ft_atol(argv[4]);// * 1000;
+	table->time_die = ft_atol(argv[2]);
+	table->time_eat = ft_atol(argv[3]);
+	table->time_sleep = ft_atol(argv[4]);
 	if (table->time_eat < 60 || table->time_sleep < 60
 			|| table->time_die < 60)
 		return (printf("Error: Time not greater than  60ms.\n"), 1);
@@ -71,6 +71,8 @@ int	parsing(t_table *table, char **argv, int argc)
 	if (table->philo_nbr == 1)
 		return (printf("Philosopher 1 has only one fork and will starve.\n"),
 				precise_usleep(table->time_die), printf("Philosopher 1 died.\n"), 1);
+	if (table->time_die < table->time_eat + table->time_sleep)
+		return (printf("Error: Time to die need to be higher than sleep + eat.\n"), 1);
 	return (0);
 }
 

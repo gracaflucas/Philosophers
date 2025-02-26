@@ -12,6 +12,12 @@
 
 #include "philo.h"
 
+// to do :
+// check how monitor reads if a philo is eating, and how it assumes death
+// a philo eating cannot starve, but the timer only starts couting when they finish eating.
+// do a dead lock for monitor, so if it checks and any philo is dead, it locks everything to kill the simulation
+// check timing problems, sometimes killing philo
+
 static int	cleanup(t_table *table);
 static int	create_and_join(t_table *table);
 
@@ -46,7 +52,7 @@ static int	cleanup(t_table *table)
 		return (printf("Error: mutex_destroy.\n"), 1);
 	return (0);
 }
-// create and joins all threads, monitor and philos
+
 static int create_and_join(t_table *table)
 {
 	int			i;
@@ -83,28 +89,3 @@ void	precise_usleep(long duration)
 	while ((get_current_time() - start) < duration)
 		usleep(500);
 }
-
-/*
-time to die starts since the beggining of the program, if a philosopher isnt 
-eating. time to eat, during this time the philo will hold 2 forks, the left
-and the right one. time to sleep after eating?
-simulation stops when a phil die
-they sit in a circle, so phil N, sits besides N + 1 and N - 1.
-Phil 1 sits next to N - 1 (number of phil) and N + 1 (next) USE A CIRCULAR
-Linked list?
-use a monitor to get info in between the philosophers
-when eating, get time of last meal, so to do a priority in what phil must eat
-the monitor checks the availability of forks and the priority list
-do a function for each routine, so a function for eating, one for sleeping and one for thinking
-distinguish philosophers between odd and even? i % 2 = 0
-*/
-
-/*   Phil 1 is next to phil + 1 and phil % philnumbr + 1
-		 DINNER READY
-			phil 2
-		f1	    	f2
-	Phil1		      phil 3
-	    f0          f3
-	  phil 5  f4  phil 4
-
-*/
