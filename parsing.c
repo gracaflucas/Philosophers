@@ -12,7 +12,7 @@
 
 #include "philo.h"
 
-static int	argument_error()
+static int	argument_error(void)
 {
 	printf("Wrong number of arguments. Try:\n\'");
 	printf("./philo\'\n\"Number_of_philosophers\"\n\"Time_to_die");
@@ -56,10 +56,10 @@ int	parsing(t_table *table, char **argv, int argc)
 	table->time_eat = ft_atol(argv[3]);
 	table->time_sleep = ft_atol(argv[4]);
 	if (table->time_eat < 60 || table->time_sleep < 60
-			|| table->time_die < 60)
+		|| table->time_die < 60)
 		return (printf("Error: Time not greater than  60ms.\n"), 1);
 	if (table->philo_nbr < 1)
-		return (printf("Error: Number of Philosophers can't be 0 or less.\n"), 1);
+		return (printf("Error: Number of Philosophers can't be 0 >=.\n"), 1);
 	if (argv[5])
 	{
 		table->max_meals = ft_atol(argv[5]);
@@ -70,9 +70,9 @@ int	parsing(t_table *table, char **argv, int argc)
 		table->max_meals = -1;
 	if (table->philo_nbr == 1)
 		return (printf("Philosopher 1 has only one fork and will starve.\n"),
-				precise_usleep(table->time_die), printf("Philosopher 1 died.\n"), 1);
+			precise_usleep(table->time_die), printf("Philo 1 died.\n"), 1);
 	if (table->time_die < table->time_eat + table->time_sleep)
-		return (printf("Error: Time to die need to be higher than sleep + eat.\n"), 1);
+		return (printf("Error:Time to die need to be > than sleep+eat.\n"), 1);
 	return (0);
 }
 

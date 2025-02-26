@@ -8,6 +8,7 @@ RM = rm -rf
 SRC = main.c\
 	parsing.c\
 	routines.c\
+	monitor.c\
 
 OBJ = $(SRC:.c=.o)
 

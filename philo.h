@@ -21,15 +21,15 @@
 # include <sys/time.h>
 # include <unistd.h>
 
-typedef struct s_table t_table;
+typedef struct s_table	t_table;
 
-typedef struct	s_fork
+typedef struct s_fork
 {
 	int				id;
 	pthread_mutex_t	fork;	
 }					t_fork;
 
-typedef struct	s_philo
+typedef struct s_philo
 {
 	int				id;
 	int				meals;
@@ -58,10 +58,12 @@ typedef struct s_table
 
 void	*routine(void *arg);
 void	*monitor(void *arg);
+int		check_end(t_table *table);
+void	print_routine(t_philo *philo, int routine);
 
 int		parsing(t_table *table, char **argv, int argc);
 int		init(t_table *table);
-long	get_current_time();
+long	get_current_time(void);
 void	precise_usleep(long duration);
 
 #endif

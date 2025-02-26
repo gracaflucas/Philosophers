@@ -14,8 +14,10 @@
 
 // to do :
 // check how monitor reads if a philo is eating, and how it assumes death
-// a philo eating cannot starve, but the timer only starts couting when they finish eating.
-// do a dead lock for monitor, so if it checks and any philo is dead, it locks everything to kill the simulation
+// a philo eating cannot starve, but the timer only starts couting when
+// they finish eating.
+// do a dead lock for monitor, so if it checks and any philo is dead, 
+// it locks everything to kill the simulation
 // check timing problems, sometimes killing philo
 
 static int	cleanup(t_table *table);
@@ -53,7 +55,7 @@ static int	cleanup(t_table *table)
 	return (0);
 }
 
-static int create_and_join(t_table *table)
+static int	create_and_join(t_table *table)
 {
 	int			i;
 	pthread_t	monitor_thread;
@@ -62,10 +64,11 @@ static int create_and_join(t_table *table)
 		return (printf("Error: monitor thread create.\n"), 1);
 	i = -1;
 	while (++i < table->philo_nbr)
-		if (pthread_create(&table->philos[i].thread_id, NULL, &routine, &table->philos[i]) != 0)
+		if (pthread_create(&table->philos[i].thread_id, NULL,
+				&routine, &table->philos[i]) != 0)
 			return (printf("Error: thread create.\n"), cleanup(table), 1);
 	if (pthread_join(monitor_thread, NULL) != 0)
-			return (printf("Error: monitor join.\n"), cleanup(table), 1);
+		return (printf("Error: monitor join.\n"), cleanup(table), 1);
 	i = -1;
 	while (++i < table->philo_nbr)
 		if (pthread_join(table->philos[i].thread_id, NULL) != 0)
@@ -73,7 +76,7 @@ static int create_and_join(t_table *table)
 	return (0);
 }
 
-long	get_current_time()
+long	get_current_time(void)
 {
 	struct timeval	tv;
 
