@@ -71,8 +71,6 @@ int	parsing(t_table *table, char **argv, int argc)
 	if (table->philo_nbr == 1)
 		return (printf("Philosopher 1 has only one fork and will starve.\n"),
 			precise_usleep(table->time_die), printf("Philo 1 died.\n"), 1);
-	if (table->time_die < table->time_eat + table->time_sleep)
-		return (printf("Error:Time to die need to be > than sleep+eat.\n"), 1);
 	return (0);
 }
 

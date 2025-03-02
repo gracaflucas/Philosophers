@@ -51,11 +51,11 @@ static void	*philo_eat(t_philo *philo)
 		pthread_mutex_lock(&philo->right->fork);
 		pthread_mutex_lock(&philo->left->fork);
 	}
+	print_routine(philo, 5);
 	print_routine(philo, 1);
 	pthread_mutex_lock(&philo->meal_lock);
 	philo->last_meal_time = get_current_time();
 	precise_usleep(philo->table->time_eat);
-	philo->last_meal_time = get_current_time();
 	philo->meals += 1;
 	if (philo->meals == philo->table->max_meals && philo->table->max_meals != 0)
 		philo->full = 1;
@@ -96,6 +96,8 @@ void	print_routine(t_philo *philo, int routine)
 		pthread_mutex_unlock(&philo->table->lock);
 		return ;
 	}
+	else if (routine == 5)
+		printf("%ld Philosopher %d has taken a fork.\n", time, philo->id);
 	else if (routine == 1)
 		printf("%ld Philosopher %d is eating.\n", time, philo->id);
 	else if (routine == 2)
