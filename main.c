@@ -90,5 +90,5 @@ void	precise_usleep(long duration)
 
 	start = get_current_time();
 	while ((get_current_time() - start) < duration)
-		usleep(500);
+		usleep(100);
 }

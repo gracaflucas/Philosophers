@@ -21,8 +21,8 @@ void	*routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	if (philo->id % 2 == 0)
-		precise_usleep(1);
+	if (philo->id % 2 == 1)
+		precise_usleep(2);
 	while (1)
 	{
 		if (check_end(philo->table) == 1)
@@ -89,13 +89,18 @@ void	print_routine(t_philo *philo, int routine)
 
 	pthread_mutex_lock(&philo->table->lock);
 	time = get_current_time() - philo->table->start;
-	if (routine == 1)
+	if (routine == 4 && philo->table->end)
+		printf("%ld Philosopher %d has died.\n", time, philo->id);
+	else if (philo->table->end)
+	{
+		pthread_mutex_unlock(&philo->table->lock);
+		return ;
+	}
+	else if (routine == 1)
 		printf("%ld Philosopher %d is eating.\n", time, philo->id);
 	else if (routine == 2)
 		printf("%ld Philosopher %d is sleeping.\n", time, philo->id);
 	else if (routine == 3)
 		printf("%ld Philosopher %d is thinking.\n", time, philo->id);
-	else if (routine == 4)
-		printf("%ld Philosopher %d has died.\n", time, philo->id);
 	pthread_mutex_unlock(&philo->table->lock);
 }
