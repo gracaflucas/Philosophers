@@ -12,14 +12,6 @@
 
 #include "philo.h"
 
-// to do :
-// check how monitor reads if a philo is eating, and how it assumes death
-// a philo eating cannot starve, but the timer only starts couting when
-// they finish eating.
-// do a dead lock for monitor, so if it checks and any philo is dead, 
-// it locks everything to kill the simulation
-// check timing problems, sometimes killing philo
-
 static int	cleanup(t_table *table);
 static int	create_and_join(t_table *table);
 

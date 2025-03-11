@@ -55,11 +55,11 @@ static void	*philo_eat(t_philo *philo)
 	print_routine(philo, 1);
 	pthread_mutex_lock(&philo->meal_lock);
 	philo->last_meal_time = get_current_time();
-	precise_usleep(philo->table->time_eat);
 	philo->meals += 1;
 	if (philo->meals == philo->table->max_meals && philo->table->max_meals != 0)
 		philo->full = 1;
 	pthread_mutex_unlock(&philo->meal_lock);
+	precise_usleep(philo->table->time_eat);
 	pthread_mutex_unlock(&philo->left->fork);
 	pthread_mutex_unlock(&philo->right->fork);
 	return (NULL);

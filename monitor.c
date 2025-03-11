@@ -64,12 +64,15 @@ static void	update_end(t_table *table)
 static void	check_dead(t_philo *philo)
 {
 	long	last_meal;
+	int		is_full;
 
 	pthread_mutex_lock(&philo->meal_lock);
 	last_meal = get_current_time() - philo->last_meal_time;
+	is_full = philo->full;
 	pthread_mutex_unlock(&philo->meal_lock);
 	if (check_end(philo->table) == 1)
 		return ;
-	if (last_meal >= philo->table->time_die && philo->full == 0)
+	if (last_meal >= philo->table->time_die && is_full == 0)
 		return (update_end(philo->table), print_routine(philo, 4));
 }
+
