@@ -1,4 +1,4 @@
-# 🧠 Philosophers (100/100)
+# 🧠 Philosophers
 
 **Philosophers** is a multithreaded C project from the 42 curriculum that simulates the classic **Dining Philosophers Problem**. It focuses on thread creation, synchronization, and avoiding concurrency issues like deadlocks and race conditions using the **pthread** library.
 
